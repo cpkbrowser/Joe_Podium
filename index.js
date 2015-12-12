@@ -79,12 +79,11 @@ app.use(function(err, req, res, next) {
 
 var debug = require('debug')('nodetest1');
 app.set('port', process.env.PORT || 3000);
-console.log(app.get('port'));
 
 var server = app.listen(app.get('port'), function() {
   debug('Express server listening on port ' + server.address().port);
 });
-console.log(app.get('port'));
+console.log('Application available at port: ' + app.get('port'));
 
 var mongoose = require('mongoose');
 global.connection = mongoose.createConnection('mongodb://apiadmin:cloudspire3@ds053469.mongolab.com:53469/speakfreely');
