@@ -1,0 +1,8 @@
+{
+  "name": "JoePodiumAPI",
+  "description": "Uncensored Response in a Censored World.",
+  "repository": "",
+  "logo": "",
+  "keywords": ["node", "express", "static"],
+  "image": "heroku/nodejs"
+}
