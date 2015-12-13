@@ -42,14 +42,13 @@ function login() {
 
 function test() {
 	var postData = {
-		email: 'kbrown.watco@gmail.com',
-		verification_code: '6893',
-		id: 'YgrEBI00D1w'
+		topic: 'Politics',
+		starter: 'djbigdad@gmail.com'
 	}
 	var x = 1;
 	$.ajax({
 		//url: 'http://joepodiumapi.herokuapp.com/test',
-		url: "http://localhost:3000/updateTopic/post-video",
+		url: "http://localhost:3000/admin/restart_topic",
 		type: "POST",
 		data: postData,
 		headers: {

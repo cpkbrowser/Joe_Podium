@@ -13,6 +13,7 @@ var postLogin = require('./routes/postLogin');
 var getVideos = require('./routes/getVideos');
 var updateTopic = require('./routes/updateTopic');
 var addLotteryRequest = require('./routes/addLotteryRequest');
+var admin = require('./routes/admin');
 var test = require('./routes/test');
 
 var app = express();
@@ -44,6 +45,7 @@ app.use('/postLogin', postLogin);
 app.use('/getVideos', getVideos);
 app.use('/updateTopic', updateTopic);
 app.use('/addLotteryRequest', addLotteryRequest);
+app.use('/admin', admin);
 app.use('/test', test);
 
 // catch 404 and forward to error handler

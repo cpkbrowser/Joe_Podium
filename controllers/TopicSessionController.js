@@ -15,7 +15,7 @@ module.exports.closeAllTopics = function(callback) {
 		
 		var finished = __.after(rslt.data.length, ProcessComplete);		
 		rslt.data.forEach(function(item, index, array) {
-			closeTopicSession(item.category, function(rslt2) {
+			closeTopicSession(item.category, null, function(rslt2) {
 				results.push(rslt2);
 				finished();
 			});	
@@ -24,16 +24,33 @@ module.exports.closeAllTopics = function(callback) {
 	});
 };
 
-function closeTopicSession(category, callback) {
+module.exports.restartTopic = function(topic, starter, callback) {
+	console.log('restarting topic session');
+	closeTopicSession(topic, starter, function(rslt) {
+		callback(rslt);
+	});
+};
+
+function closeTopicSession(category, starter_override, callback) {
 	TopicController.getTopic(category, function(rslt) {
 		if (rslt.status == "success") {
 			var topic = rslt.data;
-			sbController.generateScoreboard(topic, function(rslt2) {	
-				if (rslt2.status == 'success') {
+			console.log('generating scoreboard');
+			sbController.generateScoreboard(topic, function(rslt2) {
+				if (rslt2.status == 'success' || starter_override != null) {
+					console.log('closing old topic');
 					TopicController.closeTopic(topic, function(rslt3) {
 						if (rslt3.status = 'success') {
 							var newID = util.getNewPostID(topic.post_id);
-							TopicController.createTopic(topic.category, newID, rslt2.data.winner, function(rslt4) {
+							var starter, y_id;
+							if (starter_override != null) {
+								starter = starter_override;
+								y_id = 'RD3ukNwwh7s';
+							} else {
+								starter = rslt2.data.winner;
+								y_id = rslt2.data.rankings[0].id;
+							}
+							TopicController.createTopic(topic.category, newID, starter, function(rslt4) {
 								var newTopic = rslt4.data;
 								if (rslt4.status == 'success') {
 									TopicController.saveTopic(newTopic, function(rslt5) {
@@ -42,8 +59,8 @@ function closeTopicSession(category, callback) {
 												'category': newTopic.category,
 												'email': newTopic.post_admin.email,
 												'verification_code': newTopic.post_admin.verification_code,
-												'link': 'https://www.youtube.com/watch?v=' + rslt2.data.rankings[0].id,
-												'thumbnail': 'http://img.youtube.com/vi/' + rslt2.data.rankings[0].id + '/maxresdefault.jpg'
+												'link': 'https://www.youtube.com/watch?v=' + y_id,
+												'thumbnail': 'http://img.youtube.com/vi/' + y_id + '/maxresdefault.jpg'
 											};
 											email.NotifyPostAdmin(notify, function(rslt6) {
 												callback(rslt6);

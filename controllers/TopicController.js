@@ -116,24 +116,28 @@ module.exports.getViewCounts = function(topic, callback) {
 					callback({'status': 'success', 'scores': arr, 'errors': errors});
 				});
 			} else {
-				callback({'status': 'no urls were provided by responders'});
+				callback({'status': 'no videos were posted by the topic responders'});
 			}		
 		}
 		
-		var finished = __.after(topic.max_responders, ProcessComplete);
+		var finished = __.after(topic.responders.length, ProcessComplete);
 		topic.responders.forEach(function(item, index, array) {
-			YoutubeController.getVideoByID(item.youtube_id, function(data) {
-				if (data.rslt.items[0] != null) {
-						if (data.status == 'success') {
-						scores.push({'email': item.email, 'id': item.youtube_id, 'count': data.rslt.items[0].statistics.viewCount});
+			if (item.youtube_id != "") {
+				YoutubeController.getVideoByID(item.youtube_id, function(data) {
+					if (data.rslt.items[0] != null) {
+							if (data.status == 'success') {
+							scores.push({'email': item.email, 'id': item.youtube_id, 'count': data.rslt.items[0].statistics.viewCount});
+						} else {
+							errors.push({'email': item.email, 'id': item.youtube_id, 'error': data.rslt});
+						}
+						finished();
 					} else {
-						errors.push({'email': item.email, 'id': item.youtube_id, 'error': data.rslt});
-					}
-					finished();
-				} else {
-					finished();
-				}			
-			});
+						finished();
+					}			
+				});
+			} else {
+				finished();
+			}
 		});
 	}	
 };
@@ -142,6 +146,7 @@ module.exports.createTopic = function(category, post_id, poster, callback) {
 	//need to implement lottery function here
 	//fill in 20 responders, leave max_responders = 0
 	//once topic admin has set responder threshold, send email to x amount of responders.
+	console.log('creating topic');
 	var Topics = connection.model('topic');
 	var topicUser = connection.model('topic_user');
 	var start = moment().utc().startOf('day').add(1, 'milliseconds');
@@ -149,9 +154,12 @@ module.exports.createTopic = function(category, post_id, poster, callback) {
 	lottery.getLotteryRequests(category, function(rslt) {
 		if (rslt.status == 'success') {
 			var responders = [];
-			var max = max_topic_responder; //max_topic_responder is a global, set in server.js
+			var max = max_topic_responder;
+			if (max == null || max == 0) {
+				max = 5;
+			}
 			if (rslt.data.length < max) { max = rslt.data.length };
-			for (i = 0; i < max; i++) {
+			for (i = 0; i < max && i < rslt.data.length; i++) {
 				responders.push(new topicUser({
 					email: rslt.data[i].email,
 					youtube_id: '',
