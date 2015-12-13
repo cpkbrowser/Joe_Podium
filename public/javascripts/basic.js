@@ -42,20 +42,21 @@ function login() {
 
 function test() {
 	var postData = {
-		email: 'info@cpkbrowser.com',
-		verification_code: '8558',
-		id: 'zxR00790x6A'
+		email: 'kbrown.watco@gmail.com',
+		verification_code: '6893',
+		id: 'YgrEBI00D1w'
 	}
 	var x = 1;
 	$.ajax({
 		//url: 'http://joepodiumapi.herokuapp.com/test',
-		url: "http://localhost:3000/test",
+		url: "http://localhost:3000/updateTopic/post-video",
 		type: "POST",
+		data: postData,
 		headers: {
 			token: sessionStorage.token,
-			nonce: sessionStorage.nonce
+			nonce: sessionStorage.nonce,
+			'Access-Control-Allow-Origin': 'http://173.254.28.46/~joepodiu'
 		},
-		data: postData,
 		contentType: 'application/x-www-form-urlencoded',
 		dataType: 'json',
 		success: function (rslt) {

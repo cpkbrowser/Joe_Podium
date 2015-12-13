@@ -19,6 +19,7 @@ module.exports = function() {
 			verification_code: Number
 		},
 		max_responders: Number,
+		max_duration: Number,
 		responders: [topicUserSchema],
 		active: String,
 		active_date: Date,

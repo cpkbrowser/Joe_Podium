@@ -41,7 +41,9 @@ function closeTopicSession(category, callback) {
 											var notify = {
 												'category': newTopic.category,
 												'email': newTopic.post_admin.email,
-												'verification_code': newTopic.post_admin.verification_code
+												'verification_code': newTopic.post_admin.verification_code,
+												'link': 'https://www.youtube.com/watch?v=' + rslt2.data.rankings[0].id,
+												'thumbnail': 'http://img.youtube.com/vi/' + rslt2.data.rankings[0].id + '/maxresdefault.jpg'
 											};
 											email.NotifyPostAdmin(notify, function(rslt6) {
 												callback(rslt6);

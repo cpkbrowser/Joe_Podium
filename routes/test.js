@@ -14,17 +14,9 @@ router.post('/', function(req, res){
 	//TopicSessionController.closeAllTopics(function(rslt) {
 	//	res.json(rslt);
 	//});
-	//TopicController.accessTopic_Responder(req.body.email, req.body.verification_code, function(rslt) {
-	//	if (rslt.status != null) {
-	//		var topic = rslt.data;
-	//		topic.responders[rslt.index].youtube_id = req.body.id;
-	//		TopicController.saveTopic(topic, function(rslt2) {
-	//			res.json(rslt2);
-	//		});
-	//	} else {
-	//		res.json(rslt);
-	//	}
-	//});
+	youtube.checkVideoDuration('YgrEBI00D1w', 10, function(rslt) {
+		res.json(rslt);
+	});
 });
 
 module.exports = router;

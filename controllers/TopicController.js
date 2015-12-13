@@ -168,6 +168,7 @@ module.exports.createTopic = function(category, post_id, poster, callback) {
 					verification_code: newVerificationCode()
 				},
 				max_responders: 0,
+				max_duration: 0,
 				responders: responders,
 				active: 'true',
 				active_date: start,
