@@ -25,6 +25,7 @@ app.set('view engine', 'html');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
+cors({credentials: true, origin: true});
 app.use(cors());
 app.use(logger('dev'));
 app.use(bodyParser.json());
