@@ -42,19 +42,18 @@ function login() {
 
 function test() {
 	var postData = {
-		topic: 'Politics',
-		starter: 'djbigdad@gmail.com'
+		id: '9XP2An7lTXQ',
+		email: 'info@cpkbrowser.com',
+		verification_code: '1234'
 	}
 	var x = 1;
 	$.ajax({
-		//url: 'http://joepodiumapi.herokuapp.com/test',
-		url: "http://localhost:3000/admin/restart_topic",
+		url: "http://localhost:3000/updateTopic/post-video",
 		type: "POST",
 		data: postData,
 		headers: {
 			token: sessionStorage.token,
-			nonce: sessionStorage.nonce,
-			'Access-Control-Allow-Origin': 'http://173.254.28.46/~joepodiu'
+			nonce: sessionStorage.nonce
 		},
 		contentType: 'application/x-www-form-urlencoded',
 		dataType: 'json',

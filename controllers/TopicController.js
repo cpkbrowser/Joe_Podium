@@ -5,7 +5,7 @@ var __ = require('underscore');
 var moment = require('moment');
 var YoutubeController = require('../controllers/YouTubeController');
 var utilities = require('../controllers/UtilitiesController');
-var lottery = require('../controllers/LotteryController'); 
+var lottery = require('../controllers/LotteryController');
 
 module.exports.getTopic = function(category, callback) {
 	
@@ -178,6 +178,7 @@ module.exports.createTopic = function(category, post_id, poster, callback) {
 				max_responders: 0,
 				max_duration: 0,
 				responders: responders,
+				responders_notified: false,
 				active: 'true',
 				active_date: start,
 				exp_date: end

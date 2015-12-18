@@ -5,6 +5,7 @@ var http = require("http");
 var auth = require('node-session-tokens')();
 var TopicController = require('../controllers/TopicController');
 var youtube = require('../controllers/YouTubeController');
+var EmailController = require('../controllers/EmailController');
 
 router.post('/responder-video', function(req, res){
 	auth.validateSession(req.headers.token, req.headers.nonce,
@@ -27,6 +28,7 @@ router.post('/responder-video', function(req, res){
 });
 
 router.post('/post-video', function(req, res){
+	console.log('updating starter video.');
 	auth.validateSession(req.headers.token, req.headers.nonce,
 	function(response) {
 		youtube.checkVideoDuration(req.body.id, 20, function(duration_data) {
@@ -49,9 +51,22 @@ router.post('/post-video', function(req, res){
 								topic.max_duration = 5;
 							}
 						}
-						TopicController.saveTopic(topic, function(rslt2) {
-							res.json(rslt2);
-						});
+						if (topic.responders_notified) {
+							TopicController.saveTopic(topic, function(rslt2) {
+								res.json(rslt2);
+							});
+						} else {
+							EmailController.notifyPostResponders(topic, function(rslt2) {
+								if (rslt2.status == "success") {
+									topic.responders_notified = true;
+									TopicController.saveTopic(topic, function(rslt3) {
+										res.json(rslt3);
+									});
+								} else {
+									res.json(rslt2);
+								}
+							});	
+						}
 					} else {
 						res.json(rslt);
 					}

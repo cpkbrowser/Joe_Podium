@@ -21,6 +21,7 @@ module.exports = function() {
 		max_responders: Number,
 		max_duration: Number,
 		responders: [topicUserSchema],
+		responders_notified: Boolean,
 		active: String,
 		active_date: Date,
 		exp_date: Date
