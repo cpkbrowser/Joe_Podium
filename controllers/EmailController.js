@@ -2,87 +2,97 @@ var email = require("emailjs");
 var __ = require('underscore');
 
 module.exports.NotifyPostAdmin = function(data, callback) {
-	var template = getTemplate_PostAdmin();
-	var msg = formatMessage_PostAdmin(template, data);
-	var subject = 'Time to Post Your Video!';
-	SendMail(data.email, subject, subject, msg, function(success) {
-		if (success) {
-			callback({'status': 'success'});
-		} else {
-			callback({'status': 'error sending mail'});
-		}
-	});
+	try {
+		var template = getTemplate_PostAdmin();
+		var msg = formatMessage_PostAdmin(template, data);
+		var subject = 'Time to Post Your Video!';
+		SendMail(data.email, subject, subject, msg, function(success) {
+			if (success) {
+				callback({'status': 'success'});
+			} else {
+				callback({'status': 'error', 'rslt': 'error sending mail'});
+			}
+		});
+	} catch (ex) {
+		callback({'status': 'error', 'rslt': 'Unknown error occured, please contact support.'});
+	}
 };
 
 module.exports.notifyPostResponders = function(topic, callback) {
-	var results = [];
-	var complete = function() {
-		callback({'status': 'success', 'data': results});
-	}
-	var finished = __.after(topic.responders.length, complete);
-	
-	var template = getTemplate_Responder();
-	var subject = 'Time to Post Your Video!';
-	topic.responders.forEach(function(item, index, array) {
-		var data = {
-			'category': topic.category,
-			'email': item.email,
-			'verification_code': item.verification_code,
-			'link': 'https://www.youtube.com/watch?v=' + topic.post_admin.youtube_id,
-			'thumbnail': 'http://img.youtube.com/vi/' + topic.post_admin.youtube_id + '/maxresdefault.jpg',
-			'winner': topic.post_admin.email.split('@')[0]
-		};
-		var msg = formatMessage_Responder(template, data);
-		SendMail(item.email, subject, subject, msg, function(success) {
-			if (success) {
-				results.push({
-					'email': item.email,
-					'status': 'success'
-				});
-			} else {
-				results.push({
-					'email': item.email,
-					'status': 'error'
-				});
-			}
-			finished();
+	try {
+		var results = [];
+		var complete = function() {
+			callback({'status': 'success', 'data': results});
+		}
+		var finished = __.after(topic.responders.length, complete);
+		
+		var template = getTemplate_Responder();
+		var subject = 'Time to Post Your Video!';
+		topic.responders.forEach(function(item, index, array) {
+			var data = {
+				'category': topic.category,
+				'email': item.email,
+				'verification_code': item.verification_code,
+				'link': 'https://www.youtube.com/watch?v=' + topic.post_admin.youtube_id,
+				'thumbnail': 'http://img.youtube.com/vi/' + topic.post_admin.youtube_id + '/maxresdefault.jpg',
+				'winner': topic.post_admin.email.split('@')[0]
+			};
+			var msg = formatMessage_Responder(template, data);
+			SendMail(item.email, subject, subject, msg, function(success) {
+				if (success) {
+					results.push({
+						'email': item.email,
+						'status': 'success'
+					});
+				} else {
+					results.push({
+						'email': item.email,
+						'status': 'error'
+					});
+				}
+				finished();
+			});
 		});
-	});
+	} catch (ex) {
+		callback({'status': 'error', 'rslt': 'Unknown error occured, please contact support.'});
+	}
 };
 
 
 //Internal Functions
 function SendMail(emlToAddr, emlSubject, emlMessage, emlHtml, callback) {
-	
-	var server  = email.server.connect({
-		user: "no-reply@joepodium.com", 
-		password: "ShawnKyleRocks2016!", 
-		host: "just46.justhost.com", 
-		port: 465,
-		ssl: true
-	});
-	
-	var message = {
-		text: emlMessage, 
-		from: "Joe Podium <no-reply@joepodium.com>", 
-		to: emlToAddr,
-		subject: emlSubject,
-		attachment: 
-		[
-			{data: emlHtml, alternative:true}
-		]
-	};  
-	
-	server.send(message, function(err, message) {
-		if (err) {
-			console.log(err);
-			callback(false);
-		} else {
-			console.log('Message Sent');
-			callback(true);
-		}
-	});
-	
+	try {
+		var server  = email.server.connect({
+			user: "no-reply@joepodium.com", 
+			password: "ShawnKyleRocks2016!", 
+			host: "just46.justhost.com", 
+			port: 465,
+			ssl: true
+		});
+		
+		var message = {
+			text: emlMessage, 
+			from: "Joe Podium <no-reply@joepodium.com>", 
+			to: emlToAddr,
+			subject: emlSubject,
+			attachment: 
+			[
+				{data: emlHtml, alternative:true}
+			]
+		};  
+		
+		server.send(message, function(err, message) {
+			if (err) {
+				console.log(err);
+				callback(false);
+			} else {
+				console.log('Message Sent');
+				callback(true);
+			}
+		});
+	} catch (ex) {
+		callback({'status': 'error', 'rslt': 'Unknown error occured, please contact support.'});
+	}
 };
 
 function getTemplate_PostAdmin() {
