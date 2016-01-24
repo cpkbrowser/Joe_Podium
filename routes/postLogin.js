@@ -28,7 +28,7 @@ router.post('/postadmin', function(req, res) {
 								'nonce': response.nonce,
 								'expires': response.expirationDateTime
 							};
-							res.json({'status': 'success', 'token_data': token_data});
+							res.json({'status': 'success', 'token_data': token_data, 'category': found.category});
 						},
 						function(error) {
 							console.log('error message: %s', error.message);
@@ -68,10 +68,9 @@ router.post('/responder', function(req, res) {
 							var token_data = {
 								'token': response.sessionToken,
 								'nonce': response.nonce,
-								'expires': response.expirationDateTime,
-								'category': found.category
+								'expires': response.expirationDateTime
 							};
-							res.json({'status': 'success', 'token_data': token_data});
+							res.json({'status': 'success', 'token_data': token_data, 'category': found.category});
 						},
 						function(error) {
 							console.log('error message: %s', error.message);
