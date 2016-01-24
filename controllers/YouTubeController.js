@@ -46,7 +46,7 @@ module.exports.validateVideo = function(id, max_duration, callback) {
 					duration = moment.duration(duration).asMinutes();
 					if (duration <= max_duration) {
 						var time_data = rslt.items[0].snippet.publishedAt;
-						var start_time = moment().subtract(700, 'days').format();
+						var start_time = moment().subtract(8, 'days').format();
 						console.log('start: ' + start_time);
 						var end_time = moment().format();
 						if (isBetweenDates(start_time, time_data, end_time)) {
