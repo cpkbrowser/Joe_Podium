@@ -68,7 +68,8 @@ router.post('/responder', function(req, res) {
 							var token_data = {
 								'token': response.sessionToken,
 								'nonce': response.nonce,
-								'expires': response.expirationDateTime
+								'expires': response.expirationDateTime,
+								'category': found.category
 							};
 							res.json({'status': 'success', 'token_data': token_data});
 						},
